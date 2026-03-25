@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.venv_packages/
+vendor_pkgs/
+
+# Artifacts
+artifacts/
+*.pt
+*.pkl
+
+# Data
+data/raw/
+data/processed/
+*.csv
+*.parquet
+
+# Streamlit
+.streamlit/

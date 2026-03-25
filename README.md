@@ -1,50 +1,73 @@
-# Phishing URL Detection System
+# Phishing URL Detector
 
-A machine learning based phishing URL detection system that classifies URLs as legitimate or phishing. The system trains multiple models and automatically selects the best performing model for deployment.
+This project implements a phishing URL classifier using a hybrid deep learning pipeline in PyTorch, with a Streamlit interface for interactive prediction.
 
-## Features
+## Overview
 
-- URL feature extraction
-- Multi-model training pipeline
-- Automatic best model selection
-- Real-time prediction using Flask web app
-- Model saving and loading
+The model combines two signal sources:
 
-## Models Used
+- Character-level CNN features learned directly from raw URL strings
+- Handcrafted URL risk features based on domain and path patterns
 
-- Logistic Regression
-- Random Forest Classifier
-- XGBoost Classifier
+These representations are fused in a single classifier for binary prediction (`phishing` vs `legitimate`).
 
-## Dataset
+## Core capabilities
 
-Dataset sourced from Kaggle phishing URL dataset.  
-Due to size limitations, dataset files are not included in this repository.
+- URL preprocessing and character vocabulary building
+- Hybrid CNN model training with validation tracking
+- Test-set evaluation (accuracy, precision, recall, F1, ROC-AUC)
+- Model artifact export for inference
+- Streamlit app for real-time scoring and feature display
 
-## Technologies Used
+## Dataset format
 
-- Python
-- Scikit-learn
-- XGBoost
-- Pandas
-- Flask
-- Joblib
+Input data must include:
 
-## How To Run
+- `url`
+- one label column: `label`, `status`, `target`, or `class`
 
-### Step 1: Install dependencies
+Supported label values:
 
+- `0`, `legitimate`, `benign`, `good`
+- `1`, `phishing`, `malicious`, `bad`
 
-### Step 2: Train the model
+Accepted file types:
 
+- `.csv`
+- `.parquet`
 
-### Step 3: Run web app
+Default lookup order:
 
+- `data/raw/phishing_dataset.csv`
+- `phishing_dataset.csv`
+- `Training.parquet`
 
-### Step 4: Open in browser
+## Installation
 
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-## Output
+## Train
 
-The system trains multiple models and selects the best performing one based on accuracy before deployment.
+```bash
+python -m src.train --data-path Training.parquet --epochs 8 --batch-size 128
+```
 
+Training outputs:
+
+- `artifacts/hybrid_cnn_model.pt`
+- `artifacts/vocab.json`
+- `artifacts/config.json`
+- `artifacts/metrics.json`
+- `data/processed/train.csv`
+- `data/processed/val.csv`
+- `data/processed/test.csv`
+
+## Run the app
+
+```bash
+streamlit run app/streamlit_app.py
+```
